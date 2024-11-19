@@ -1,0 +1,44 @@
+{% load static %}
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}用户面板{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+    <style>
+        body {
+            display: flex;
+        {#background: aliceblue;#} margin: 0; /* 清除默认 margin */
+            background-color: #F0F0F0;
+
+        }
+    </style>
+    {% block css %}
+    {% endblock %}
+</head>
+<body>
+{% include 'layout_sidebar.html' %}
+<div class="content">
+    {% include 'layout_header.html' %}
+    {% block content %}
+    {% endblock %}
+</div>
+</body>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/echarts.js' %}"></script>
+{% block js %}
+    <script type="text/javascript">
+        const navItems = document.querySelectorAll('.item');
+        navItems.forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+        navItems[0].classList.add('active');
+    </script>
+{% endblock %}
+
+</html>

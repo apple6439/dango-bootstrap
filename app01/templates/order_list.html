@@ -1,0 +1,16 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block content %}
+    <div class="container">
+    <h1>我是订单页</h1>
+    </div>
+{% endblock %}
+{% block js %}
+    <script type="text/javascript">
+        const navItems = document.querySelectorAll('.item');
+        navItems.forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+        navItems[2].classList.add('active');
+    </script>
+{% endblock %}

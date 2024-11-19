@@ -1,0 +1,52 @@
+
+.guanliyuan {
+    padding-top: 20px;
+    height: 310px;
+    background-color: #fff;
+}
+
+.bottom_line {
+    padding-bottom: 10px;
+    padding-left: 10px;
+    border-bottom: 2px #DCDCDC solid;
+    display: flex;
+    flex-direction: row;
+}
+
+.guanliyuan div:nth-child(1) span {
+    display: inline-block;
+}
+
+.shunzhipailie {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+.shunzhipailie span:nth-child(1) {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.shunzhipailie span:nth-child(2) {
+    font-weight: lighter;
+}
+
+.guanliyuan img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-right: 30px;
+}
+
+.dengluxinxi {
+    padding-left: 10px;
+}
+
+.dengluxinxi div {
+    margin-top: 30px;
+}
+
+.dengluxinxi div span {
+    margin-left: 35px;
+}

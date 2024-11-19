@@ -1,0 +1,318 @@
+{% extends 'layout.html' %}
+{% load static %}
+{% block css %}
+        <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4" style="height: 100vh;padding-right: 20px;padding-left: 20px">
+                <div class="row guanliyuan">
+                    <div class="bottom_line">
+                        <img src="../static/img/admin_img.jpeg">
+                        <div class="shunzhipailie">
+                            <span>Admin</span>
+                            <span>超级管理员</span>
+                        </div>
+                    </div>
+                    <div class="dengluxinxi">
+                        <div>上次登录时间:<span>2024-11-11</span></div>
+                        <div>上次登录地点:<span>北京</span></div>
+                    </div>
+                </div>
+                <div class="row" style="height: 440px; background-color: #fff;margin-top: 30px">
+                    <div class="bs-example" data-example-id="simple-table">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>课程</th>
+                                <th>今日购买</th>
+                                <th>本月购买</th>
+                                <th>总购买</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <th scope="row">1</th>
+                                <td>Mark</td>
+                                <td>Otto</td>
+                                <td>@mdo</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">2</th>
+                                <td>Jacob</td>
+                                <td>Thornton</td>
+                                <td>@fat</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">3</th>
+                                <td>Larry</td>
+                                <td>the Bird</td>
+                                <td>@twitter</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8" style="height: 100vh;padding-left: 20px;">
+                <div class="row" style="height: 150px;background-color: #fff">
+                    <!-- 卡片1 -->
+                    <div class="col-md-4" style="margin-top:2%">
+                        <div class="card">
+                            <div style="float:left;margin-right: 2%">
+                                <span class="glyphicon glyphicon-star" style="font-size: 36px;color:orange"
+                                      aria-hidden="true"></span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">今日收藏</h5>
+                                <p class="card-text">1234</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div style="float:left;margin-right: 2%">
+                                <span class="glyphicon glyphicon-star" style="font-size: 36px;color:orange"
+                                      aria-hidden="true"></span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">本月收藏</h5>
+                                <p class="card-text">1234</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 卡片2 -->
+                    <div class="col-md-4" style="margin-top:2%">
+                        <div class="card">
+                            <div style="float:left;margin-right: 4%">
+                                <span class="glyphicon glyphicon-ok" style="font-size: 36px;color: #006dcc"
+                                      aria-hidden="true"></span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">今日销售</h5>
+                                <p class="card-text">¥ 1234</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div style="float:left;margin-right: 4%">
+                                <span class="glyphicon glyphicon-ok" style="font-size: 36px;color: #006dcc"
+                                      aria-hidden="true"></span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">本月销售</h5>
+                                <p class="card-text">¥ 1234</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 卡片3 -->
+                    <div class="col-md-4" style="margin-top:2%">
+                        <div class="card">
+                            <div style="float:left;margin-right: 2%">
+                                <span class="glyphicon glyphicon-lock" style="font-size: 36px;color:#91cc75"
+                                      aria-hidden="true"></span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">今日订单</h5>
+                                <p class="card-text">12120</p>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div style="float:left;margin-right: 2%">
+                                <span class="glyphicon glyphicon-lock" style="font-size: 36px;color:#91cc75"
+                                      aria-hidden="true"></span>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">本月订单</h5>
+                                <p class="card-text">12120</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="height: 350px; background-color: #fff;margin-top: 15px">
+                    <div id="chart1" style="height: 100%;width: 100%"></div>
+                </div>
+                <div class="row" style="height: 250px; margin-top: 15px; display: flex;">
+                    <div class="col-md-6" style="height: 250px; background-color: #fff; margin-right: 20px;">
+                        <div id="chart2" style="height: 100%;width: 100%"></div>
+                    </div>
+                    <div class="col-md-6" style="height: 250px; background-color: #fff;">
+                        <div id="chart3" style="height: 100%;width: 100%"></div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        const navItems = document.querySelectorAll('.item');
+        navItems.forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+        navItems[0].classList.add('active');
+
+        // 这里可以添加图表初始化的代码
+        $(function () {
+            intLine()
+            intBar()
+            intPie()
+        })
+
+        /**
+         * 初始化折线图
+         */
+        function intLine() {
+            var myChart = echarts.init(document.getElementById('chart1'));
+            option = {
+                title: {
+
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data: ['1', '2', '3', '4', '5']
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                toolbox: {
+                    feature: {
+                        {#saveAsImage: {}#}
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data:['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '1',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [120, 132, 101, 134, 90, 230, 210]
+                    },
+                    {
+                        name: '2',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [220, 182, 191, 234, 290, 330, 310]
+                    },
+                    {
+                        name: '3',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [150, 232, 201, 154, 190, 330, 410]
+                    },
+                    {
+                        name: '4',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [320, 332, 301, 334, 390, 330, 320]
+                    },
+                    {
+                        name: '5',
+                        type: 'line',
+                        stack: 'Total',
+                        data: [820, 932, 901, 934, 1290, 1330, 1320]
+                    }
+                ]
+            };
+            myChart.setOption(option)
+        }
+
+        /**
+         * 初始化柱状图
+         */
+        function intBar() {
+            var myChart = echarts.init(document.getElementById('chart2'));
+            option = {
+                title: {
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    top: '5%',
+                    left: 'center',
+                    data: ['1', '2'],
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name: '1',
+                        data: [120, 200, 150, 80, 70, 110, 130],
+                        type: 'bar'
+                    },
+                    {
+                        name: '2',
+                        data: [20, 20, 15, 40, 110, 30, 150],
+                        type: 'bar'
+                    }
+                ]
+            };
+            myChart.setOption(option)
+        }
+
+        /**
+         * 初始化饼图
+         */
+        function intPie() {
+            var myChart = echarts.init(document.getElementById('chart3'));
+            option = {
+                title: {
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    top: '5%',
+                    left: 'center'
+                },
+                series: [
+                    {
+                        name: 'Access From',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {value: 1048, name: '1'},
+                            {value: 735, name: '2'},
+                            {value: 580, name: '3'},
+                            {value: 484, name: '4'},
+                            {value: 300, name: '5'}
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            myChart.setOption(option)
+        }
+
+    </script>
+{% endblock %}

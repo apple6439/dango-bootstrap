@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图表展示系统</title>
+
+</head>
+<body>
+<div id="sidebar">
+    <header>
+        <span>后台管理系统</span>
+    </header>
+    <main>
+        <div class="menu" >
+            <div class="item active">
+                <a href="/home/"><span class="glyphicon glyphicon-home" aria-hidden="true" style="margin-right: 5px"></span>首页</a>
+            </div>
+        </div>
+        <div class="menu" >
+            <div class="item">
+                <a href="/user/list/" onclick="setActiveLink()"><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 5px"></span>人员管理</a>
+            </div>
+        </div>
+        <div class="menu">
+            <div class="item">
+                <a href="/order/list/" onclick="setActiveLink()"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true" style="margin-right: 5px"></span>订单管理</a>
+            </div>
+        </div>
+        <div class="menu">
+            <div class="item">
+                <a href="page/line.html">折线图</a>
+            </div>
+        </div>
+        <div class="menu">
+            <div class="item">
+                <a href="page/scatter.html">散点图</a>
+            </div>
+        </div>
+        <div class="menu">
+            <div class="item">
+                <a href="page/radar.html">雷达图</a>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

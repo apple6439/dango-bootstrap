@@ -1,0 +1,73 @@
+
+
+
+#sidebar {
+    width: 250px; /* 设置侧边栏宽度 */
+    height: 100vh; /* 设置侧边栏高度为视口高度 */
+    background-color: #f8f9fa;
+    position: fixed; /* 固定在屏幕左侧 */
+    padding-top: 20px;
+    border-right: 1px solid #e0e0e0;
+    overflow-y: auto; /* 允许纵向滚动 */
+}
+
+#sidebar header {
+    height: 8%;
+    background-color: #263238;
+    font-size: 20px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sidebar main {
+    padding: 15px 0;
+}
+
+#sidebar header a {
+    color: #fff;
+    display: block;
+    text-decoration: none;
+}
+
+.menu {
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px; /* 添加一些内边距 */
+}
+
+.menu:hover {
+    background-color: rgb(238, 241, 244);
+    cursor: pointer;
+}
+
+.menu .item {
+    width: 100%; /* 使项宽度占满菜单 */
+    height: 100%;
+    border-radius: 10px;
+    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center; /* 居中对齐 */
+}
+
+.menu .item a {
+    color: #333333;
+    text-decoration: none;
+    width: 100%; /* 链接宽度占满项 */
+    text-align: center; /* 链接文本居中 */
+}
+
+.active {
+    background-color: rgb(0, 107, 254);
+
+}
+
+.content {
+    margin-left: 250px; /* 留出侧边栏的空间 */
+    padding-top: 20px;
+    flex: 1; /* 内容区域占满剩余空间 */
+}
