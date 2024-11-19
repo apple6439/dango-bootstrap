@@ -24,6 +24,8 @@ urlpatterns = [
     path('home/', views.home),
     # 员工
     path('user/list/', views.user_list),
+    # 部门
+    path('department/list/', views.department_list),
     # 订单
     path('order/list/', views.order_list),
 ]

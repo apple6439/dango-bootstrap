@@ -7,8 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>{% block title %}用户面板{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
-
     <style>
         body {
             display: flex;
@@ -38,6 +36,7 @@
             navItem.classList.remove('active');
         });
         navItems[0].classList.add('active');
+
     </script>
 {% endblock %}
 

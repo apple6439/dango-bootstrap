@@ -12,12 +12,21 @@ def home(request):
 
 
 '''
-用户管理
+员工管理
 '''
 
 
 def user_list(request):
     return render(request, 'user_list.html')
+
+
+'''
+部门管理
+'''
+
+
+def department_list(request):
+    return render(request, 'department_list.html')
 
 
 '''

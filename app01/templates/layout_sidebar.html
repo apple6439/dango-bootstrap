@@ -1,49 +1,174 @@
-<!DOCTYPE html>
-<html lang="zh">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>图表展示系统</title>
-
-</head>
-<body>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/sildebar.css' %}">
 <div id="sidebar">
     <header>
         <span>后台管理系统</span>
     </header>
     <main>
-        <div class="menu" >
+        <div class="menu">
             <div class="item active">
-                <a href="/home/"><span class="glyphicon glyphicon-home" aria-hidden="true" style="margin-right: 5px"></span>首页</a>
-            </div>
-        </div>
-        <div class="menu" >
-            <div class="item">
-                <a href="/user/list/" onclick="setActiveLink()"><span class="glyphicon glyphicon-user" aria-hidden="true" style="margin-right: 5px"></span>人员管理</a>
+                <a href="/home/"><span class="glyphicon glyphicon-home" aria-hidden="true"
+                                       style="margin-right: 5px"></span>首页</a>
             </div>
         </div>
         <div class="menu">
             <div class="item">
-                <a href="/order/list/" onclick="setActiveLink()"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true" style="margin-right: 5px"></span>订单管理</a>
+                <a href="/user/list/"><span class="glyphicon glyphicon-user" aria-hidden="true"
+                                            style="margin-right: 5px"></span>人员管理</a>
             </div>
         </div>
         <div class="menu">
             <div class="item">
-                <a href="page/line.html">折线图</a>
+                <a href="/department/list/"><span class="glyphicon glyphicon-briefcase" aria-hidden="true"
+                                  style="margin-right: 5px"></span>部门管理</a>
             </div>
         </div>
         <div class="menu">
             <div class="item">
-                <a href="page/scatter.html">散点图</a>
+                <a href="/order/list/"><span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"
+                                             style="margin-right: 5px"></span>订单管理</a>
             </div>
         </div>
         <div class="menu">
-            <div class="item">
-                <a href="page/radar.html">雷达图</a>
+            <div class="item" id="otherMenu" style="position: relative;"> <!-- 让父菜单具有相对定位 -->
+                <a href="#">
+                    <span class="glyphicon glyphicon-option-vertical" aria-hidden="true"
+                          style="margin-right: 5px"></span>其他
+                </a>
+                <ul class="submenu" style="display: none;">
+                    <li><a href="/admin/info/">个人信息</a></li>
+                    <li><a href="/admin/change_password/">修改密码</a></li>
+                    <li><a href="/logout/">退出登录</a></li>
+                </ul>
             </div>
         </div>
     </main>
 </div>
 
-</body>
-</html>
+<style>
+    /* CSS样式 */
+    #sidebar {
+        width: 250px; /* 设置侧边栏宽度 */
+        height: 100vh; /* 设置侧边栏高度为视口高度 */
+        background-color: #f8f9fa;
+        position: fixed; /* 固定在屏幕左侧 */
+        padding-top: 20px;
+        border-right: 1px solid #e0e0e0;
+        overflow-y: auto; /* 允许纵向滚动 */
+    }
+
+    #sidebar header {
+        height: 8%;
+        background-color: #263238;
+        font-size: 20px;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #sidebar main {
+        padding: 15px 0;
+    }
+
+    #sidebar header a {
+        color: #fff;
+        display: block;
+        text-decoration: none;
+    }
+
+    .menu {
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 10px; /* 添加一些内边距 */
+    }
+
+    .menu:hover {
+        background-color: rgb(238, 241, 244);
+        cursor: pointer;
+    }
+
+    .menu .item {
+        width: 100%; /* 使项宽度占满菜单 */
+        height: 100%;
+        border-radius: 10px;
+        text-align: center;
+        align-items: center;
+        display: flex;
+        justify-content: center; /* 居中对齐 */
+        position: relative; /* 相对定位，以便子菜单绝对定位 */
+    }
+
+    .menu .item a {
+        color: #333333;
+        text-decoration: none;
+        width: 100%; /* 链接宽度占满项 */
+        text-align: center; /* 链接文本居中 */
+    }
+
+    .active {
+        background-color: rgb(0, 107, 254);
+    }
+
+    .content {
+        margin-left: 250px; /* 留出侧边栏的空间 */
+        padding-top: 20px;
+        flex: 1; /* 内容区域占满剩余空间 */
+    }
+
+    .submenu {
+        list-style-type: none; /* 去掉列表标记 */
+        padding: 0; /* 去掉内边距 */
+        margin: 0; /* 去掉外边距 */
+        display: none; /* 默认隐藏子菜单 */
+        position: absolute; /* 绝对定位 */
+        top: 60px;
+        background-color: #ffffff; /* 子菜单背景颜色 */
+        border: 1px solid #e0e0e0; /* 边框样式 */
+        border-radius: 5px; /* 圆角 */
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+        z-index: 1000; /* 确保子菜单在其他元素之上 */
+    }
+
+    .submenu li {
+        height: auto; /* 自适应高度 */
+    }
+
+    .submenu li a {
+        display: block; /* 让链接占满整个区域 */
+        padding: 10px 20px; /* 添加内边距 */
+        text-align: left; /* 左对齐文本 */
+        color: #333333; /* 子菜单文本颜色 */
+    }
+
+    .submenu li a:hover {
+        background-color: rgb(238, 241, 244); /* 悬停时子菜单项的背景色 */
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const otherMenu = document.getElementById('otherMenu');
+
+        otherMenu.addEventListener('click', function (e) {
+            // 阻止默认的链接跳转
+            e.preventDefault();
+            const navItems = document.querySelectorAll('.item');
+            navItems.forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+            navItems[4].classList.add('active');
+            // 获取子菜单
+            const submenu = otherMenu.querySelector('.submenu');
+
+            // 切换子菜单的显示状态
+            if (submenu.style.display === 'none' || submenu.style.display === '') {
+                submenu.style.display = 'block'; // 显示子菜单
+            } else {
+                submenu.style.display = 'none'; // 隐藏子菜单
+            }
+        });
+    });
+</script>

@@ -2,8 +2,162 @@
 {% load static %}
 {% block content %}
     <div class="container">
-    <h1>我是用户页</h1>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group d-flex">
+                    <label for="userName" style="margin-right: 10px;">用户姓名:</label>
+                    <input type="text" class="form-control" id="userName" placeholder="请输入用户姓名">
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group d-flex">
+                    <label for="gender" style="margin-right: 10px;">性别:</label>
+                    <select class="form-control" id="gender">
+                        <option value="">请选择性别</option>
+                        <option value="male">男</option>
+                        <option value="female">女</option>
+                        <option value="other">其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <button type="button" class="btn btn-primary" style="margin-top: 26px;"><span
+                        class="glyphicon glyphicon-search" aria-hidden="true" style="margin-right: 5px;"></span>查 询
+                </button>
+            </div>
+        </div>
+        <div>
+            <button type="button" class="btn btn-success"><span class="glyphicon glyphicon-plus" aria-hidden="true"
+                                                                style="margin-right: 5px"></span>添 加
+            </button>
+            <button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-trash" aria-hidden="true"
+                                                               style="margin-right: 5px"></span>删 除
+            </button>
+        </div>
+        <div class="panel panel-primary" style="margin-top: 10px;">
+            <div class="panel-heading">员工信息列表</div>
+            <div class="panel-body">
+                <div class="bs-example" data-example-id="hoverable-table" style="margin: 20px;">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                <input type="checkbox" id="select-all">
+                            </th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Username</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <th scope="row">
+                                <input type="checkbox" class="select-row">
+                            </th>
+                            <td>Mark</td>
+                            <td>Otto</td>
+                            <td>@mdo</td>
+                            <td>
+                                <a class="btn btn-primary btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                <a class="btn btn-danger btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <input type="checkbox" class="select-row">
+                            </th>
+                            <td>Jacob</td>
+                            <td>Thornton</td>
+                            <td>@fat</td>
+                            <td>
+                                <a class="btn btn-primary btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                <a class="btn btn-danger btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">
+                                <input type="checkbox" class="select-row">
+                            </th>
+                            <td>Larry</td>
+                            <td>the Bird</td>
+                            <td>@twitter</td>
+                             <td>
+                                <a class="btn btn-primary btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+                                <a class="btn btn-danger btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+                            </td>
+
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="text-center">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li>
+                        <a href="http://127.0.0.1:8000/pretty/list/?page=1"
+                           aria-label="Previous">
+                            <span aria-hidden="true">首页</span>
+                        </a>
+                    </li>
+                    {% if user_page.has_previous %}
+                        <li>
+                            <a href="http://127.0.0.1:8000/pretty/list/?page={{ user_page.previous_page_number }}"
+                               aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+
+
+                    {% for item in paginator.page_range %}
+                        {% if item == current_page %}
+                            <li class="active"><a
+                                    href="http://127.0.0.1:8000/pretty/list/?page={{ item }}">{{ item }}</a>
+                            </li>
+                        {% else %}
+                            <li><a href="http://127.0.0.1:8000/pretty/list/?page={{ item }}">{{ item }}</a></li>
+                        {% endif %}
+                    {% endfor %}
+                    {% if user_page.has_next %}
+                        <li>
+                            <a href="http://127.0.0.1:8000/pretty/list/?page={{ user_page.next_page_number }}"
+                               aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="disabled">
+                            <a aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    {% endif %}
+                    <li>
+                        <a href="http://127.0.0.1:8000/pretty/list/?page={{ paginator.num_pages }}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">尾页</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
+
 {% endblock %}
 {% block js %}
     <script type="text/javascript">
@@ -12,5 +166,24 @@
             navItem.classList.remove('active');
         });
         navItems[1].classList.add('active');
+        $(document).ready(function () {
+            $('#select-all').click(function () {
+                // 如果"全选"复选框被选中
+                if ($(this).is(':checked')) {
+                    $('.select-row').prop('checked', true); // 选中所有行复选框
+                } else {
+                    $('.select-row').prop('checked', false); // 取消所有行复选框
+                }
+            });
+
+            // 当任一行复选框的状态发生变化时更新"全选"复选框
+            $('.select-row').change(function () {
+                if ($('.select-row:checked').length == $('.select-row').length) {
+                    $('#select-all').prop('checked', true);
+                } else {
+                    $('#select-all').prop('checked', false);
+                }
+            });
+        });
     </script>
 {% endblock %}
