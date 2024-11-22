@@ -1,0 +1,10 @@
+<ul>
+    {% for sub_department in department.sub_departments.all %}
+        <li class="list-group-item" data-id="{{ sub_department.department_id }}">
+            {{ sub_department.name }}
+            {% if sub_department.sub_departments.count > 0 %}
+                {% include 'sub_department_list.html' with department=sub_department %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

@@ -1,16 +1,74 @@
 {% extends 'layout.html' %}
 {% load static %}
 {% block content %}
-    <div class="container">
-    <h1>我是部门页</h1>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-4" id="department-tree">
+                <h2>部门结构</h2>
+                <ul class="list-group" id="tree">
+                    {% for department in departments %}
+                        <li class="list-group-item" data-id="{{ department.department_id }}">
+                            {{ department.name }}
+                            {% if department.sub_departments.count > 0 %}
+                                <ul>
+                                    {% include 'sub_department_list.html' with department=department %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-8" id="department-info">
+                <h2>部门信息</h2>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>部门ID</th>
+                        <th>部门名称</th>
+                        <th>负责人</th>
+                        <th>上级部门</th>
+                        <th>创建时间</th>
+                        <th>业绩</th>
+                    </tr>
+                    </thead>
+                    <tbody id="department-table-body">
+                    <!-- 部门信息将通过AJAX填充 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 {% endblock %}
+
 {% block js %}
     <script type="text/javascript">
-        const navItems = document.querySelectorAll('.item');
-        navItems.forEach(navItem => {
-            navItem.classList.remove('active');
+        $(document).ready(function () {
+            $('#tree .list-group-item[data-id]').on('click', function (event) {
+                event.stopPropagation();  // 阻止事件冒泡
+                const departmentId = $(this).data('id'); // 获取部门ID
+                $.ajax({
+                    url: `/get_department_info/${departmentId}/`,
+                    method: 'GET',
+                    success: function (data) {
+                        const tbody = $('#department-table-body');
+                        tbody.empty();  // 清空表格
+                        const row = `
+                    <tr>
+                        <td>${data.department.department_id}</td>
+                        <td>${data.department.name}</td>
+                        <td>${data.department.manager || '无'}</td>
+                        <td>${data.department.parent_department || '无'}</td>
+                        <td>${data.department.created_at}</td>
+                        <td>${data.department.performance}</td>
+                    </tr>
+                `;
+                        tbody.append(row);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching department info:', error);
+                    }
+                });
+            });
         });
-        navItems[2].classList.add('active');
     </script>
 {% endblock %}
