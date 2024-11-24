@@ -1,12 +1,11 @@
 {% load static %}
-<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>{% block title %}用户面板{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'plugins/toastr/build/toastr.min.css' %}">
     <style>
         body {
             display: flex;
@@ -28,16 +27,27 @@
 </body>
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
-<script src="{% static 'js/echarts.js' %}"></script>
+<script src="{% static 'plugins/toastr/build/toastr.min.js' %}"></script>
+<script>
+    toastr.options = {
+        "closeButton": true, // 显示关闭按钮
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-center", // 弹框位置
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "3000", // 自动隐藏时间
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
+</script>
 {% block js %}
-    <script type="text/javascript">
-        const navItems = document.querySelectorAll('.item');
-        navItems.forEach(navItem => {
-            navItem.classList.remove('active');
-        });
-        navItems[0].classList.add('active');
-
-    </script>
 {% endblock %}
 
 </html>

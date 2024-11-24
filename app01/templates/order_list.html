@@ -150,10 +150,30 @@
 {% endblock %}
 {% block js %}
     <script type="text/javascript">
-        const navItems = document.querySelectorAll('.item');
-        navItems.forEach(navItem => {
-            navItem.classList.remove('active');
+        $(document).ready(function () {
+            const navItems = document.querySelectorAll('.item');
+            navItems.forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+            navItems[3].classList.add('active');
+            $('#select-all').click(function () {
+                // 如果"全选"复选框被选中
+                if ($(this).is(':checked')) {
+                    $('.select-row').prop('checked', true); // 选中所有行复选框
+                } else {
+                    $('.select-row').prop('checked', false); // 取消所有行复选框
+                }
+            });
+
+            // 当任一行复选框的状态发生变化时更新"全选"复选框
+            $('.select-row').change(function () {
+                if ($('.select-row:checked').length == $('.select-row').length) {
+                    $('#select-all').prop('checked', true);
+                } else {
+                    $('#select-all').prop('checked', false);
+                }
+            });
         });
-        navItems[3].classList.add('active');
+
     </script>
 {% endblock %}

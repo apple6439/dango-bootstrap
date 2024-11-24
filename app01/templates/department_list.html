@@ -3,72 +3,337 @@
 {% block content %}
     <div class="container-fluid">
         <div class="row">
-            <div class="col-md-4" id="department-tree">
+            <div class="col-md-4">
                 <h2>部门结构</h2>
-                <ul class="list-group" id="tree">
-                    {% for department in departments %}
-                        <li class="list-group-item" data-id="{{ department.department_id }}">
+                <ul class="list-group">
+                    {% for department in departments_parent %}
+                        <li class="list-group-item">
                             {{ department.name }}
                             {% if department.sub_departments.count > 0 %}
                                 <ul>
-                                    {% include 'sub_department_list.html' with department=department %}
+                                    {% include 'sub_department_list1.html' with department=department %}
                                 </ul>
                             {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
             </div>
-            <div class="col-md-8" id="department-info">
-                <h2>部门信息</h2>
+            <div class="col-md-8">
+                <h2>
+                    <button type="button" id="btn_add" class="btn btn-success"><span class="glyphicon glyphicon-plus"
+                                                                                     aria-hidden="true"
+                                                                                     style="margin-right: 5px"></span>添
+                        加
+                    </button>
+                    <button type="button" class="btn btn-danger" id="btn_multiple_delete"><span
+                            class="glyphicon glyphicon-trash"
+                            aria-hidden="true"
+                            style="margin-right: 5px"></span>删 除
+                    </button>
+
+                    <div class="col-lg-6 clearfix" style="float: right">
+                        <form method="get">
+                            <div class="input-group">
+                                <input type="text" name="q" class="form-control" placeholder="输入部门名">
+                                <span class="input-group-btn">
+        <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"
+                                                            aria-hidden="true"></span></button>
+                                     <button class="btn btn-default" type="submit"><span
+                                             class="glyphicon glyphicon-repeat"
+                                             aria-hidden="true"></span></button>
+
+      </span>
+                            </div><!-- /input-group -->
+                        </form>
+                    </div><!-- /.col-lg-6 -->
+
+                </h2>
                 <table class="table">
                     <thead>
                     <tr>
+                        <th>
+                            <input type="checkbox" id="select-all">
+                        </th>
                         <th>部门ID</th>
                         <th>部门名称</th>
                         <th>负责人</th>
                         <th>上级部门</th>
                         <th>创建时间</th>
                         <th>业绩</th>
+                        <th>操作</th>
                     </tr>
                     </thead>
                     <tbody id="department-table-body">
-                    <!-- 部门信息将通过AJAX填充 -->
+                    {% for obj in user_page %}
+                        <tr>
+                            <th scope="row">
+                                <input type="checkbox" class="select-row" value="{{ obj.department_id }}">
+                            </th>
+                            <td>{{ obj.department_id }}</td>
+                            <td>{{ obj.name }}</td>
+                            <td>{{ obj.manager }}</td>
+                            <td>{{ obj.parent_department }}</td>
+                            <td>{{ obj.created_at|date:'Y-m-d' }}</td>
+                            <td>{{ obj.performance }}</td>
+                            <td>
+                                <a class="btn btn-primary btn-xs"
+                                   href="#"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+
+                                <a class="btn btn-danger btn-xs btn_delete"
+                                   href="#" data-nid="{{ obj.department_id }}"><span class="glyphicon glyphicon-trash"
+                                                                                     aria-hidden="true"
+                                ></span></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
+                <div class="text-right">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li>
+                                <a href="http://127.0.0.1:8000/department/list/?page=1"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">首页</span>
+                                </a>
+                            </li>
+                            {% if user_page.has_previous %}
+                                <li>
+                                    <a href="http://127.0.0.1:8000/department/list/?page={{ user_page.previous_page_number }}"
+                                       aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="disabled">
+                                    <a aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+
+
+                            {% for item in paginator.page_range %}
+                                {% if item == current_page %}
+                                    <li class="active"><a
+                                            href="http://127.0.0.1:8000/department/list/?page={{ item }}">{{ item }}</a>
+                                    </li>
+                                {% else %}
+                                    <li><a href="http://127.0.0.1:8000/department/list/?page={{ item }}">{{ item }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if user_page.has_next %}
+                                <li>
+                                    <a href="http://127.0.0.1:8000/department/list/?page={{ user_page.next_page_number }}"
+                                       aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li class="disabled">
+                                    <a aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            <li>
+                                <a href="http://127.0.0.1:8000/department/list/?page={{ paginator.num_pages }}"
+                                   aria-label="Previous">
+                                    <span aria-hidden="true">尾页</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {#    新建的模态框#}
+        <div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">新建部门</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form id="form1">
+                            {% for field in form %}
+                                <div class="form-group" style="position: relative;margin-bottom: 20px">
+                                    <label>{{ field.label }}</label>
+                                    {{ field }}
+                                    <span class="clear" style="color: red;position: absolute"></span>
+                                </div>
+                            {% endfor %}
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button id="confirm1" type="button" class="btn btn-primary">保存</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+        {#    删除的模态框#}
+        <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog" role="document">
+                <div class="alert alert-danger alert-dismissible fade in" role="alert">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4>是否确定删除</h4>
+                    <div>
+                        <div>删除后，所以关联的数据会被删除</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                        <button id="confirm2" type="button" class="btn btn-danger">确 定</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block js %}
+    <script src="{% static 'plugins/datepicker/js/bootstrap-datepicker.js' %}"></script>
+    <script src="{% static 'plugins/datepicker/locales/bootstrap-datepicker.zh-CN.min.js' %}"></script>
     <script type="text/javascript">
+        const navItems = document.querySelectorAll('.item');
+        navItems.forEach(navItem => {
+            navItem.classList.remove('active');
+        });
+        navItems[2].classList.add('active');
         $(document).ready(function () {
-            $('#tree .list-group-item[data-id]').on('click', function (event) {
-                event.stopPropagation();  // 阻止事件冒泡
-                const departmentId = $(this).data('id'); // 获取部门ID
-                $.ajax({
-                    url: `/get_department_info/${departmentId}/`,
-                    method: 'GET',
-                    success: function (data) {
-                        const tbody = $('#department-table-body');
-                        tbody.empty();  // 清空表格
-                        const row = `
-                    <tr>
-                        <td>${data.department.department_id}</td>
-                        <td>${data.department.name}</td>
-                        <td>${data.department.manager || '无'}</td>
-                        <td>${data.department.parent_department || '无'}</td>
-                        <td>${data.department.created_at}</td>
-                        <td>${data.department.performance}</td>
-                    </tr>
-                `;
-                        tbody.append(row);
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('Error fetching department info:', error);
-                    }
-                });
+            // sessionStorage是指本地存储一个会话中的数据,这些数据只有在同一个会话中的页面才能访问并且当会话结束后数据也随之销毁
+            const successMessage = sessionStorage.getItem('successMessage');
+            if (successMessage) {
+                toastr.success(successMessage);  // 显示成功消息
+                sessionStorage.removeItem('successMessage');  // 清除消息
+            }
+
+            $('#select-all').click(function () {
+                // 如果"全选"复选框被选中
+                if ($(this).is(':checked')) {
+                    $('.select-row').prop('checked', true); // 选中所有行复选框
+                } else {
+                    $('.select-row').prop('checked', false); // 取消所有行复选框
+                }
             });
+
+            // 当任一行复选框的状态发生变化时更新"全选"复选框
+            $('.select-row').change(function () {
+                if ($('.select-row:checked').length === $('.select-row').length) {
+                    $('#select-all').prop('checked', true);
+                } else {
+                    $('#select-all').prop('checked', false);
+                }
+            });
+
+        });
+
+        // 新建
+        $('#btn_add').click(function () {
+            {#console.log('1')#}
+            $('#myModalAdd').modal('show')
+
+            // 确认
+            $('#confirm1').click(function () {
+                $('.clear').empty()
+                console.log('2')
+                //ajax把数据传回后端
+                $.ajax({
+                    url: '/department/add/',
+                    type: 'post',
+                    // 序列化
+                    data: $('#form1').serialize(),
+                    success: function (res) {
+                        if (res.status) {
+                            sessionStorage.setItem('successMessage', '新建成功');  // 存储成功消息
+                            location.reload()
+                            {#alert('创建成功')#}
+                            //清空表单，$("#form3")是jquery对象->$("#form3")[0]是dom对象
+                            {#$("#form3")[0].reset()#}
+                            {#//关闭模态框#}
+                            {#$('#myModal').modal('hide')#}
+                        } else {
+                            $.each(res.error, function (name, errorList) {
+                                    $('#id_' + name).next().text(errorList[0])
+                                },
+                                toastr.error('新建失败')
+                            )
+                        }
+
+                    }
+                })
+            })
+        })
+        // 单行删除
+        $('.btn_delete').click(function () {
+            $('#myModalDelete').modal('show')
+            let nid = $(this).attr('data-nid')
+            // 确认
+            $('#confirm2').click(function () {
+                console.log(nid)
+
+                $.ajax({
+                    url: '/department/' + nid + '/delete/',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (res) {
+                        if (res.status) {
+                            sessionStorage.setItem('successMessage', '删除成功')
+                            location.reload()
+                        } else {
+                            sessionStorage.setItem('successMessage', '删除失败')
+                        }
+                    },
+                    // 显示错误信息
+                    error: function (xhr, status, err) {
+                        console.log('Error:', status, err);
+                    }
+                })
+            })
+
+        })
+        // 多行删除
+        $('#btn_multiple_delete').click(function () {
+
+            let nids = []
+            $('.select-row:checked').each(function () {
+                nids.push($(this).val())
+                console.log(nids)
+            })
+            // 要删除的行不能为空
+            if (nids.length === 0) {
+                toastr.warning('删除不能为空');
+            } else {
+                $('#myModalDelete').modal('show')
+                $('#confirm2').click(function () {
+                    // 将选中的复选框的nid传回后端，后端进行处理
+                    $.ajax({
+                        url: '/department/' + 0 + '/delete/',
+                        type: 'post',
+                        dataType: 'JSON',
+                        data: {
+                            nids: nids
+                        },
+                        success: function (res) {
+                            if (res.status) {
+                                sessionStorage.setItem('successMessage', '删除成功');
+                                location.reload();
+                            }
+                        }
+                    })
+                })
+            }
+
+        })
+
+        // datapicker样式调整
+        $('#id_created_at').datepicker({
+            format: 'yyyy-mm-dd',
+            language: 'zh-CN',
         });
     </script>
 {% endblock %}
