@@ -24,6 +24,9 @@ urlpatterns = [
     path('home/', views.home),
     # 员工
     path('user/list/', views.user_list),
+    path('user/add/', views.user_add),
+    path('user/<int:nid>/update/', views.user_update),
+    path('user/<int:nid>/delete/', views.user_delete),# 删除(多行和单行)
     # 部门
     path('department/list/', views.department_list),
     path('department/add/', views.department_add),
