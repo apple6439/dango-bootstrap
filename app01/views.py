@@ -92,9 +92,11 @@ def department_add(request):
 
 @csrf_exempt
 def department_delete(request, nid):
+    # 单行删除
     if request.method == 'GET':
         Department.objects.filter(department_id=nid).delete()
         return JsonResponse({'status': True})
+    # 多行删除
     else:
         # 获取前台返回过来的列表
         nids = request.POST.getlist('nids[]')
@@ -105,6 +107,31 @@ def department_delete(request, nid):
             # 字段名__in 若 department_id in nids，则进行后面的逻辑操作
             Department.objects.filter(department_id__in=nids).delete()
         return JsonResponse({'status': True})
+
+
+@csrf_exempt
+def department_update(request, nid):
+    if request.method == 'GET':
+        row_dict = Department.objects.filter(department_id=nid).values('name', 'manager', 'parent_department',
+                                                                       'created_at',
+                                                                       'performance').first()
+        # Department.objects.filter(department_id=nid).update()
+        print(row_dict)
+        if row_dict:
+            # 格式化 created_at 字段
+            if row_dict['created_at']:
+                row_dict['created_at'] = row_dict['created_at'].strftime('%Y-%m-%d')
+            return JsonResponse({'status': True, 'data': row_dict})
+    else:
+        row_object = Department.objects.filter(department_id=nid).first()
+        form = DepartmentModelForm(data=request.POST, instance=row_object)
+        if form.is_valid():
+            form.save()
+            data_dict = {'status': True, 'error': form.errors}
+            return JsonResponse(data_dict)
+        else:
+            data_dict = {'status': False, 'error': form.errors}
+            return JsonResponse(data_dict)
 
 
 '''

@@ -28,6 +28,7 @@ urlpatterns = [
     path('department/list/', views.department_list),
     path('department/add/', views.department_add),
     path('department/<int:nid>/delete/', views.department_delete),  # 删除(多行和单行)
+    path('department/<int:nid>/update/', views.department_update),
     # 订单
     path('order/list/', views.order_list),
 ]
