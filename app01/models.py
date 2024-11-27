@@ -50,6 +50,7 @@ class Employee(models.Model):
 
 class Order(models.Model):
     order_id = models.AutoField(primary_key=True, verbose_name='订单ID')  # 订单ID
+    # 将产品图片存放在MEDIA_ROOT/product_images下
     product_image = models.ImageField(upload_to='product_images/', verbose_name='商品图片')  # 产品图片
     product_name = models.CharField(max_length=100, verbose_name='商品名称')  # 商品名称
     quantity = models.PositiveIntegerField(verbose_name='订单数量')  # 订单数量，正整数

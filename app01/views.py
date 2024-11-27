@@ -3,8 +3,9 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from app01.models import Department, Employee
+from app01.models import Department, Employee, Order
 from django.core.paginator import Paginator
+import os
 
 # Create your views here.
 
@@ -243,5 +244,93 @@ def department_update(request, nid):
 '''
 
 
+class OrderModelForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for k, field in self.fields.items():
+            # 字段中有属性保留原来的属性，没有才添加
+            if k != 'product_image':
+                if field.widget.attrs:
+                    field.widget.attrs['class'] = 'form-control'
+                    field.widget.attrs['placeholder'] = field.label
+                else:
+                    field.widget.attrs = {'class': 'form-control', 'placeholder': field.label}
+
+
 def order_list(request):
-    return render(request, 'order_list.html')
+    form = OrderModelForm()
+    # 查找功能,通过url来查询
+    data_dict = {}
+    # 这个.get('q','')是字典的一个方法，作用是当尝试获取key为q的value是，不存在q是返回空串
+    value = request.GET.get('q', '')
+    # 查询的结果存在时
+    if value:
+        # 使用 icontains 进行模糊匹配
+        data_dict['product_name__icontains'] = value
+    # res = PrettyNum.objects.filter(mobile__contains=value)
+    # res = PrettyNum.objects.filter(**data_dict)
+    # print(res)
+    # -字段名 是desc降序
+    data__list = Order.objects.filter(**data_dict)
+    # 分页功能
+    paginator = Paginator(data__list, 5)  # 每页有5条数据
+    current_page = int(request.GET.get('page', 1))  # 获取当前页码,方便前端渲染已选择的页面，例如添加active
+    user_page = paginator.page(current_page)  # 当前的页码,并且生成这一个页码的数据
+
+    return render(request, 'order_list.html', {
+        'form': form,
+        'user_page': user_page,
+        'paginator': paginator,
+        'current_page': current_page, })
+
+
+@csrf_exempt
+def order_add(request):
+    if request.method == 'POST':
+        form = OrderModelForm(data=request.POST, files=request.FILES)
+        # print(request.POST)
+        # print(request.FILES.get('product_image'))
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'status': True})
+        else:
+            return JsonResponse({'status': False, 'error': form.errors})
+
+
+@csrf_exempt
+def order_delete(request, nid):
+    # 单行删除
+    if request.method == 'GET':
+        orders = Order.objects.filter(order_id=nid).first()
+        img_path = orders.product_image.path
+        if img_path:
+            os.remove(img_path)
+            Order.objects.filter(order_id=nid).delete()
+            return JsonResponse({'status': True})
+        else:
+            return JsonResponse({'status': True, 'error': '记录不存在'})
+    # 多行删除
+    else:
+        # 获取前台返回过来的列表
+        nids = request.POST.getlist('nids[]')
+        print(nids)
+        if not nids:
+            return JsonResponse({'status': True, 'error': '删除数据为空'})
+        else:
+            # 字段名__in 若 department_id in nids，则进行后面的逻辑操作
+            orders = Order.objects.filter(order_id__in=nids)
+            for order in orders:
+                img_path = order.product_image.path
+                if img_path:
+                    os.remove(img_path)
+                    Order.objects.filter(order_id=nid).delete()
+                else:
+                    return JsonResponse({'status': True, 'error': '记录不存在'})
+
+            # 字段名__in 若 department_id in nids，则进行后面的逻辑操作
+            Order.objects.filter(order_id__in=nids).delete()
+            return JsonResponse({'status': True})
