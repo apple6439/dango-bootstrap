@@ -39,4 +39,5 @@ urlpatterns = [
     path('order/list/', views.order_list),
     path('order/add/', views.order_add),
     path('order/<int:nid>/delete/', views.order_delete),  # 删除(多行和单行)
+    path('order/<int:nid>/update/', views.order_update),  # 删除(多行和单行)
 ]

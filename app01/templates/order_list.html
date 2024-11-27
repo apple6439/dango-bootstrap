@@ -3,17 +3,20 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="col-lg-4">
-                <div class="form-group d-flex">
-                    <label for="userName" style="margin-right: 10px;">订单号:</label>
-                    <input type="text" class="form-control" id="userName" placeholder="请输入订单号">
+            <form method="get">
+                <div class="col-lg-4">
+                    <div class="form-group d-flex">
+                        <label for="userName" style="margin-right: 10px;">订单名:</label>
+                        <input type="text" class="form-control" id="userName" name="q" placeholder="请输入订单名">
+                    </div>
+
                 </div>
-            </div>
-            <div class="col-lg-4">
-                <button type="button" class="btn btn-primary" style="margin-top: 26px;"><span
-                        class="glyphicon glyphicon-search" aria-hidden="true" style="margin-right: 5px;"></span>查 询
-                </button>
-            </div>
+                <div class="col-lg-4">
+                    <button type="submit" class="btn btn-primary" style="margin-top: 26px;"><span
+                            class="glyphicon glyphicon-search" aria-hidden="true" style="margin-right: 5px;"></span>查 询
+                    </button>
+                </div>
+            </form>
         </div>
         <div>
             <button type="button" class="btn btn-success" id="btn_add"><span class="glyphicon glyphicon-plus"
@@ -39,6 +42,7 @@
                             <th>产品图片</th>
                             <th>商品名称</th>
                             <th>订单数量</th>
+                            <th>订单日期</th>
                             <th>客户</th>
                             <th>操作</th>
                         </tr>
@@ -53,6 +57,7 @@
                                 <td><img style="height: 70px;" src="/media/{{ obj.product_image }}"></td>
                                 <td style="line-height: 70px">{{ obj.product_name }}</td>
                                 <td style="line-height: 70px">{{ obj.quantity }}</td>
+                                <td style="line-height: 70px">{{ obj.order_date }}</td>
                                 <td style="line-height: 70px">{{ obj.customer_name }}</td>
                                 <td style="line-height: 70px">
                                     <a class="btn btn-primary btn-xs btn_update" data-nid="{{ obj.order_id }}"
@@ -141,6 +146,13 @@
                             {% for field in form %}
                                 <div class="form-group" style="position: relative;margin-bottom: 20px">
                                     <label>{{ field.label }}</label>
+                                    {% if field.name == 'product_image' %}
+                                        <div>
+                                            <!-- 当前产品图片显示 -->
+                                            <img id="current_product_image" src=""
+                                                 style="max-width: 100px; display: none; margin-bottom: 10px"/>
+                                        </div>
+                                    {% endif %}
                                     {{ field }}
                                     <span class="clear" style="color: red;position: absolute"></span>
                                 </div>
@@ -245,6 +257,59 @@
                 });
             });
         });
+        // 编辑
+        $('.btn_update').click(function () {
+            $('#add_or_update').text('修改数据')
+            let nid = $(this).attr('data-nid')
+            $.ajax({
+                url: '/order/' + nid + '/update/',
+                type: 'get',
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res.status) {
+                        $('#myModalAdd').modal('show')
+                        $.each(res.data, function (name, value) {
+                            console.log(value)
+                            if (name === 'product_image') {
+                                // 设置图片的 src 属性以显示当前商品图片
+                                $('#current_product_image').attr('src', '/media/' + value).show();
+                            } else {
+                                $('#id_' + name).val(value)
+                            }
+
+                        })
+                    }
+                }
+            })
+            // 确认
+            $('#confirm1').click(function () {
+                $('.clear').empty()
+                var formData = new FormData($('#form1')[0]); // 从表单元素创建 FormData
+                $.ajax({
+                    url: '/order/' + nid + '/update/',
+                    type: 'post',
+                    dataType: 'JSON',
+                    data: formData,
+                    processData: false, // 告诉 jQuery 不要处理数据
+                    contentType: false, // 告诉 jQuery 不要设置 Content-Type
+                    success: function (res) {
+                        console.log(res)
+                        if (res.status) {
+                            sessionStorage.setItem('successMessage', '修改成功');
+                            location.reload();
+                        } else {
+                            $.each(res.error, function (name, errorList) {
+                                    $('#id_' + name).next().text(errorList[0])
+                                },
+                                toastr.error('修改失败')
+                            )
+                        }
+
+                    }
+                })
+            })
+
+        })
         // 单行删除
         $('.btn_delete').click(function () {
             $('#myModalDelete').modal('show')
@@ -306,5 +371,11 @@
             }
 
         })
+
+        // datapicker样式调整
+        $('#id_order_date').datepicker({
+            format: 'yyyy-mm-dd HH:mm',
+            language: 'zh-CN',
+        });
     </script>
 {% endblock %}

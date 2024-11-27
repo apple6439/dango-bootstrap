@@ -2,7 +2,7 @@ from django import forms
 from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-
+from django.conf import settings
 from app01.models import Department, Employee, Order
 from django.core.paginator import Paginator
 import os
@@ -334,3 +334,35 @@ def order_delete(request, nid):
             # 字段名__in 若 department_id in nids，则进行后面的逻辑操作
             Order.objects.filter(order_id__in=nids).delete()
             return JsonResponse({'status': True})
+
+
+@csrf_exempt
+def order_update(request, nid):
+    if request.method == 'GET':
+        row_dict = Order.objects.filter(order_id=nid).values('product_image', 'product_name', 'order_date',
+                                                             'quantity',
+                                                             'customer_name').first()
+        print(row_dict)
+        if row_dict:
+            # 格式化 created_at 字段
+            if row_dict['order_date']:
+                row_dict['order_date'] = row_dict['order_date'].strftime('%Y-%m-%d %H:%M')
+            return JsonResponse({'status': True, 'data': row_dict})
+    else:
+        row_object = Order.objects.filter(order_id=nid).first()
+        form = OrderModelForm(data=request.POST, instance=row_object, files=request.FILES)
+        if form.is_valid():
+            img = form.cleaned_data['product_image']
+            print(img)
+
+            # 判断media中是否存在相同，有则删除
+            file_path = os.path.join(settings.MEDIA_ROOT, 'product_images', img.name)  # img.name 用于获取文件名
+            print(file_path)
+            if os.path.exists(file_path):
+                os.remove(file_path)
+            form.save()
+            data_dict = {'status': True, 'error': form.errors}
+            return JsonResponse(data_dict)
+        else:
+            data_dict = {'status': False, 'error': form.errors}
+            return JsonResponse(data_dict)

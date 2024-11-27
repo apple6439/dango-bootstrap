@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils import timezone
 
 # Create your models here.
 # python manage.py makemigrations
@@ -53,6 +53,8 @@ class Order(models.Model):
     # 将产品图片存放在MEDIA_ROOT/product_images下
     product_image = models.ImageField(upload_to='product_images/', verbose_name='商品图片')  # 产品图片
     product_name = models.CharField(max_length=100, verbose_name='商品名称')  # 商品名称
+    # auto_now_add为True时是不可编辑，反之。不可编辑意味着增删改查都无法改变
+    order_date = models.DateTimeField(auto_now_add=False, verbose_name='订单时间',default=timezone.now)  # 订单时间
     quantity = models.PositiveIntegerField(verbose_name='订单数量')  # 订单数量，正整数
     customer_name = models.CharField(max_length=100, verbose_name='客户名称')  # 客户名称
 
