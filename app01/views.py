@@ -3,11 +3,19 @@ from django.shortcuts import render, HttpResponse, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from app01.models import Department, Employee, Order
+from app01.models import Department, Employee, Order, Admin
 from django.core.paginator import Paginator
 import os
 
 # Create your views here.
+'''
+登录页面
+'''
+
+
+def index(request):
+    return render(request, 'index.html')
+
 
 '''
 首页
@@ -366,3 +374,12 @@ def order_update(request, nid):
         else:
             data_dict = {'status': False, 'error': form.errors}
             return JsonResponse(data_dict)
+
+
+'''
+管理员
+'''
+
+
+def admin_info(request):
+    return render(request, 'admin_info.html')

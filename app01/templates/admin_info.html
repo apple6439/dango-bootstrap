@@ -1,12 +1,25 @@
 {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>管理员信息</title>
+</head>
+<link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
 <style>
+    body {
+        background-color: #F0F0F0;
+    }
+
     .navbar img {
         width: 50px;
         height: 50px;
         border-radius: 50%;
         margin-right: 30px;
     }
+
 </style>
+<body>
 <nav class="navbar" style="background-color: #333333; color: white;">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -42,3 +55,8 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
 </nav>
+<div class="container" style="background-color:  #fff;height:600px;"></div>
+</body>
+<script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+</html>

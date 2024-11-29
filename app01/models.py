@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 # Create your models here.
 # python manage.py makemigrations
 # python manage.py migrate
@@ -8,8 +9,13 @@ from django.utils import timezone
 
 class Admin(models.Model):
     admin_id = models.AutoField(primary_key=True, verbose_name='管理员ID')  # 管理员ID
-    name = models.CharField(max_length=100, verbose_name='姓名')  # 姓名
-    password = models.CharField(max_length=128, verbose_name='密码')  # 密码，建议使用哈希存储
+    email = models.EmailField(max_length=254, unique=True, verbose_name='邮箱')  # 管理员邮箱
+    name = models.CharField(max_length=100, verbose_name='用户名')  # 用户名
+    password = models.CharField(max_length=128, verbose_name='密码')  # 密码
+    admin_image = models.ImageField(upload_to='admins/', verbose_name='管理员头像',
+                                    default='admins/admin_img.jpeg')  # 管理员头像
+
+    # 管理员头像
 
     def __str__(self):
         return self.name  # 返回管理员姓名
@@ -54,7 +60,7 @@ class Order(models.Model):
     product_image = models.ImageField(upload_to='product_images/', verbose_name='商品图片')  # 产品图片
     product_name = models.CharField(max_length=100, verbose_name='商品名称')  # 商品名称
     # auto_now_add为True时是不可编辑，反之。不可编辑意味着增删改查都无法改变
-    order_date = models.DateTimeField(auto_now_add=False, verbose_name='订单时间',default=timezone.now)  # 订单时间
+    order_date = models.DateTimeField(auto_now_add=False, verbose_name='订单时间', default=timezone.now)  # 订单时间
     quantity = models.PositiveIntegerField(verbose_name='订单数量')  # 订单数量，正整数
     customer_name = models.CharField(max_length=100, verbose_name='客户名称')  # 客户名称
 

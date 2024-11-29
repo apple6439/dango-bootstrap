@@ -23,6 +23,8 @@ from app01 import views
 urlpatterns = [
     re_path('^media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
     # path('admin/', admin.site.urls),
+    # 登录页面
+    path('index/', views.index),
     # 系统首页
     path('home/', views.home),
     # 员工
@@ -40,4 +42,6 @@ urlpatterns = [
     path('order/add/', views.order_add),
     path('order/<int:nid>/delete/', views.order_delete),  # 删除(多行和单行)
     path('order/<int:nid>/update/', views.order_update),  # 删除(多行和单行)
+    # 管理员
+    path('admin/info/', views.admin_info),
 ]
