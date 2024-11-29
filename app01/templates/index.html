@@ -14,25 +14,31 @@
             <!-- 注册 -->
             <div class="signup nodisplay">
                 <h1>Register</h1>
-                <form autocomplete="off">
-                    <input type="text" placeholder="用户名">
-                    <input type="email" placeholder="邮箱">
-                    <input type="password" placeholder="密码">
-                    <input type="password" placeholder="确认密码">
-                    <button class="button submit">创 建 用 户</button>
+                <form autocomplete="off" method="post" action="/register/">
+                    {% csrf_token %}
+                    {{ register_form.name }}
+                    <span style="color: red">{{ register_form.name.errors.0 }}</span>
+                    {{ register_form.email }}
+                    <span style="color: red">{{ register_form.email.errors.0 }}</span>
+                    {{ register_form.password }}
+                    {{ register_form.confirm_password }}
+                    <span style="color: red">{{ register_form.password.errors.0 }}</span>
+                    <button type="submit" class="button submit">创 建 用 户</button>
                 </form>
             </div>
 
             <!-- 登录 -->
             <div class="signin">
                 <h1>Sign In</h1>
-                <form class="more-padding" autocomplete="off">
-                    <input type="text" placeholder="用户名">
-                    <input type="password" placeholder="密码">
-                    <div class="checkbox">
-                        <input type="checkbox" id="remember"/><label for="remember">记住我</label>
-                    </div>
-                    <button class="buttom sumbit">登 录</button>
+                <form class="more-padding" autocomplete="off" method="post" action="/login/">
+                    {% csrf_token %}
+                    {{ login_form.name }}
+                    {{ login_form.password }}
+                    <span style="color: red">{{ login_form.password.errors.0 }}</span>
+                    {#                    <div class="checkbox">#}
+                    {#                        <input type="checkbox" id="remember"/><label for="remember">记住我</label>#}
+                    {#                    </div>#}
+                    <button type="submit" class="buttom sumbit">登 录</button>
                 </form>
             </div>
         </div>

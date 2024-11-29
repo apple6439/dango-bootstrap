@@ -1,5 +1,5 @@
 from django import forms
-from django.shortcuts import render, HttpResponse, get_object_or_404
+from django.shortcuts import render, HttpResponse, get_object_or_404, redirect
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
@@ -13,8 +13,97 @@ import os
 '''
 
 
-def index(request):
-    return render(request, 'index.html')
+class LoginModelForm(forms.ModelForm):
+    class Meta:
+        model = Admin
+        fields = ['name', 'password']
+        widgets = {
+            # render_value=True错误时保留
+            'password': forms.PasswordInput(render_value=True),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            # 字段中有属性保留原来的属性，没有才添加
+            if field.widget.attrs:
+                field.widget.attrs['placeholder'] = field.label
+            else:
+                field.widget.attrs = {'placeholder': field.label}
+
+
+class RegisterModelForm(forms.ModelForm):
+    confirm_password = forms.CharField(label='确认密码', required=True,
+                                       widget=forms.TextInput(attrs={"autocomplete": 'off'}))
+
+    class Meta:
+        model = Admin
+        fields = ['email', 'name', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            # 字段中有属性保留原来的属性，没有才添加
+            if field.widget.attrs:
+                field.widget.attrs['placeholder'] = field.label
+            else:
+                field.widget.attrs = {'placeholder': field.label}
+
+
+def login(request):
+    if request.method == 'GET':
+        login_form = LoginModelForm()
+        return render(request, 'index.html', {'login_form': login_form, 'register_form': RegisterModelForm()})
+
+    elif request.method == 'POST':
+        login_form = LoginModelForm(request.POST)
+        if login_form.is_valid():
+            print(login_form.cleaned_data)
+            information = login_form.cleaned_data
+            row_object = Admin.objects.filter(**information).first()
+            if row_object:
+                return redirect('/home/')
+            else:
+                login_form.add_error('password', '用户名或密码错误')
+                return render(request, 'index.html', {'login_form': login_form})
+        else:
+            return render(request, 'index.html', {'login_form': login_form})
+
+
+def register(request):
+    if request.method == 'GET':
+        register_form = RegisterModelForm()
+        return render(request, 'index.html', {'login_form': LoginModelForm(), 'register_form': register_form})
+    else:
+        register_form = RegisterModelForm(request.POST)
+        if register_form.is_valid():
+            print(register_form.cleaned_data)
+            # 判断邮箱，用户名的唯一性
+            information = register_form.cleaned_data
+            username = information['name']
+            email = information['email']
+            if Admin.objects.filter(name=username):
+                register_form.add_error('name', '用户名已存在')
+                return render(request, 'index.html', {'login_form': LoginModelForm(), 'register_form': register_form})
+            elif Admin.objects.filter(email=email):
+                register_form.add_error('email', '邮箱已注册')
+                return render(request, 'index.html', {'login_form': LoginModelForm(), 'register_form': register_form})
+            else:
+                # 判断两次输入的密码是否相同
+                password = information['password']
+                confirm_password = information['confirm_password']
+                if password == confirm_password:
+                    # 相同则保存到数据库中去
+                    register_form.save()
+                    return redirect('/login/')
+                else:
+                    register_form.add_error('password', '两次输入的密码不一致')
+                    return render(request, 'index.html',
+                                  {'login_form': LoginModelForm(), 'register_form': register_form})
+                pass
+
+        else:
+            return render(request, 'index.html', {'login_form': LoginModelForm(), 'register_form': register_form})
 
 
 '''

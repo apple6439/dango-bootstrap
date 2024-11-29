@@ -24,7 +24,8 @@ urlpatterns = [
     re_path('^media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
     # path('admin/', admin.site.urls),
     # 登录页面
-    path('index/', views.index),
+    path('login/', views.login),
+    path('register/', views.register),
     # 系统首页
     path('home/', views.home),
     # 员工
