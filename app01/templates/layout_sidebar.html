@@ -152,9 +152,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const otherMenu = document.getElementById('otherMenu');
 
-        otherMenu.addEventListener('click', function (e) {
-            // 阻止默认的链接跳转
-            e.preventDefault();
+        otherMenu.addEventListener('click', function () {
             const navItems = document.querySelectorAll('.item');
             navItems.forEach(navItem => {
                 navItem.classList.remove('active');

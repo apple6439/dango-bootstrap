@@ -4,59 +4,119 @@
 <head>
     <meta charset="UTF-8">
     <title>管理员信息</title>
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
+    <style>
+        body {
+            background-color: #F0F0F0;
+        }
+
+        .navbar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 30px;
+        }
+
+        .container {
+            background-color: #fff;
+            height: 600px;
+            display: flex;
+            padding: 20px;
+            border-radius: 8px; /* 整体容器的圆角 */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 整体容器阴影 */
+        }
+
+        .left, .right {
+            padding: 20px; /* 内边距 */
+            border-radius: 8px; /* 圆角 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 内部阴影 */
+            transition: transform 0.3s; /* 动画效果 */
+        }
+
+        .left {
+            width: 40%; /* 左侧宽度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f8f9fa; /* 左侧背景色 */
+            margin-right: 20px; /* 右侧留出空间 */
+        }
+
+        .right {
+            width: 60%; /* 右侧宽度 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #f8f9fa; /* 右侧背景色 */
+        }
+
+        input[type="file"] {
+        display: none; /* 隐藏原生的文件选择控件 */
+        }
+
+        label {
+            margin-top: 20px;
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff; /* 按钮背景颜色 */
+            color: white; /* 文字颜色 */
+            border-radius: 5px; /* 按钮圆角 */
+            cursor: pointer; /* 鼠标悬停时显示指针形状 */
+            transition: background-color 0.3s, transform 0.2s; /* 动画效果 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+        }
+
+        label:hover {
+            background-color: #0056b3; /* 悬停时的背景颜色 */
+            transform: translateY(-2px); /* 按钮悬停时的轻微上移效果 */
+        }
+
+        label:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .right div {
+            margin: 15px 0; /* 各项间距 */
+            padding: 10px; /* 内边距 */
+            background-color: #f1f1f1; /* 信息块背景色 */
+            border-radius: 5px; /* 圆角 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+            width: 100%; /* 使每个 div 占满父元素的宽度 */
+            transition: transform 0.3s, box-shadow 0.3s; /* 动画效果 */
+        }
+
+        /* 悬停效果 */
+        .right div:hover {
+            transform: translateY(-5px); /* 向上移动 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 增加阴影 */
+        }
+
+    </style>
 </head>
-<link rel="stylesheet" href="{% static 'plugins/bootstrap-3.4.1-dist/css/bootstrap.min.css' %}">
-<style>
-    body {
-        background-color: #F0F0F0;
-    }
-
-    .navbar img {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        margin-right: 30px;
-    }
-
-</style>
 <body>
-<nav class="navbar" style="background-color: #333333; color: white;">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse"
-                    aria-expanded="false">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a href="/home/" style="color: white;"><img src={% static 'img/Bee-flower-logo.png' %}></a>
-        </div>
-
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-            <ul class="nav navbar-nav">
-            </ul>
-
-            <ul class="nav navbar-nav navbar-right">
-                <li><img src='/media/admins/admin_img.jpeg'></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false" style="color: white;">
-                        Admin <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/admin/info/">个人信息</a></li>
-                        <li><a href="/admin/update/">修改密码</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="/admin/logout/">退出登录</a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div><!-- /.navbar-collapse -->
-    </div><!-- /.container-fluid -->
-</nav>
-<div class="container" style="background-color:  #fff;height:600px;"></div>
-</body>
+{% include 'layout_header.html' %}
+<div class="container">
+    <div class="col-md-5 left">
+        <form method="post" action="/admin/info/"  enctype="multipart/form-data">
+            {% csrf_token %}
+            <h1>您的头像</h1>
+            <img src="/media/{{ request.session.info.admin_image }}" style="height: 350px;width:300px">
+            <div>
+                {{ form.admin_image }}
+                <label for="id_admin_image">选择图片</label>
+            </div>
+            <button type="submit">上传头像</button>
+        </form>
+    </div>
+    <div class="col-md-7 right">
+        <div>用户名：{{ request.session.info.name }}</div>
+        <div>密码：********</div>
+        <div>邮箱：{{ request.session.info.email }}</div>
+    </div>
+</div>
 <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
 <script src="{% static 'plugins/bootstrap-3.4.1-dist/js/bootstrap.min.js' %}"></script>
+</body>
 </html>

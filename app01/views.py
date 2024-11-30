@@ -61,7 +61,18 @@ def login(request):
             print(login_form.cleaned_data)
             information = login_form.cleaned_data
             row_object = Admin.objects.filter(**information).first()
+            admin_image_dict = Admin.objects.filter(**information).values('admin_image').first()
+            admin_image = admin_image_dict['admin_image']
             if row_object:
+                # 成功后进行如下处理，cookie和session
+                # 网站生成随机字符串，写到用户浏览器的cookie中，再写入到session,django中已经帮程序员实现，我们只需要传入登陆者的信息就行
+                request.session['info'] = {'id': row_object.admin_id, 'name': row_object.name,
+                                           'email': row_object.email,
+                                           'admin_image': admin_image}
+                # 这里我们超时时间重新设置一下,这里我设置信息可以保存七天，即七天之内可以不需要登录
+                request.session.set_expiry(60 * 60 * 24 * 7)
+                for k, v in request.session.items():
+                    print(f'{k}的值为{v}')
                 return redirect('/home/')
             else:
                 login_form.add_error('password', '用户名或密码错误')
@@ -447,6 +458,7 @@ def order_update(request, nid):
             return JsonResponse({'status': True, 'data': row_dict})
     else:
         row_object = Order.objects.filter(order_id=nid).first()
+        print(request.FILES)
         form = OrderModelForm(data=request.POST, instance=row_object, files=request.FILES)
         if form.is_valid():
             img = form.cleaned_data['product_image']
@@ -470,5 +482,54 @@ def order_update(request, nid):
 '''
 
 
+class AdminAvatarModelForm(forms.ModelForm):
+    class Meta:
+        model = Admin
+        fields = ['admin_image']
+
+
+# def admin_info(request):
+#     if request.method == 'GET':
+#         admin_id = request.session['info']['id']
+#         form = AdminAvatarModelForm()
+#         return render(request, 'admin_info.html', {'form': form})
+#
+#     elif request.method == 'POST':
+#         admin_id = request.session['info']['id']
+#         # 更新数据库中的用户信息
+#         row_object = Admin.objects.filter(admin_id=admin_id).first()
+#         form = AdminAvatarModelForm(files=request.FILES, instance=row_object)
+#         if form.is_valid():
+#             form.save()
+#             # 更新 session 中的信息
+#             print(request.session['info']['admin_image'])
+#             request.session['info']['admin_image'] = ('admins/{}').format(request.FILES)
+#             print(request.session['info']['admin_image'])
+#
+#         return redirect('/admin/info/')
 def admin_info(request):
-    return render(request, 'admin_info.html')
+    admin_id = request.session['info']['id']
+    row_object = Admin.objects.filter(admin_id=admin_id).first()
+    if request.method == 'GET':
+        form = AdminAvatarModelForm()
+        return render(request, 'admin_info.html', {'form': form})
+    else:
+        print(admin_id)
+        print(request.FILES)
+        form = AdminAvatarModelForm(files=request.FILES, instance=row_object)
+        if form.is_valid():
+            # 保存表单数据,并获取保存的数据
+            admin_instance = form.save()
+            # 获取文件的 URL
+            # uploaded_file_url = admin_instance.admin_image.url  # 绝对路径
+            uploaded_file_path = admin_instance.admin_image.name  # 这会返回相对路径
+            print(uploaded_file_path)
+            # 更新 session 中的信息
+            print('之前的'+request.session['info']['admin_image'])
+            request.session['info'] = {'id': row_object.admin_id, 'name': row_object.name,
+                                       'email': row_object.email,
+                                       'admin_image': uploaded_file_path}
+            print('之后的'+request.session['info']['admin_image'])
+            # 把form中instance内容情况一下，防止render的时候会有多余的信息显示
+            form = AdminAvatarModelForm()
+            return render(request, 'admin_info.html', {'form': form})
