@@ -488,6 +488,27 @@ class AdminAvatarModelForm(forms.ModelForm):
         fields = ['admin_image']
 
 
+class AdminPasswordModelForm(forms.ModelForm):
+    original_password = forms.CharField(widget=forms.PasswordInput(), label="原密码")
+    password = forms.CharField(widget=forms.PasswordInput(), label="新密码")
+    confirm_password = forms.CharField(label='确认密码', required=True,
+                                       widget=forms.PasswordInput(attrs={"autocomplete": 'off'}))
+
+    class Meta:
+        model = Admin
+        fields = ['password']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            # 字段中有属性保留原来的属性，没有才添加
+            if field.widget.attrs:
+                field.widget.attrs['class'] = 'form-control'
+                field.widget.attrs['placeholder'] = field.label
+            else:
+                field.widget.attrs = {'class': 'form-control', 'placeholder': field.label}
+
+
 # def admin_info(request):
 #     if request.method == 'GET':
 #         admin_id = request.session['info']['id']
@@ -525,11 +546,51 @@ def admin_info(request):
             uploaded_file_path = admin_instance.admin_image.name  # 这会返回相对路径
             print(uploaded_file_path)
             # 更新 session 中的信息
-            print('之前的'+request.session['info']['admin_image'])
+            print('之前的' + request.session['info']['admin_image'])
             request.session['info'] = {'id': row_object.admin_id, 'name': row_object.name,
                                        'email': row_object.email,
                                        'admin_image': uploaded_file_path}
-            print('之后的'+request.session['info']['admin_image'])
+            print('之后的' + request.session['info']['admin_image'])
             # 把form中instance内容情况一下，防止render的时候会有多余的信息显示
             form = AdminAvatarModelForm()
             return render(request, 'admin_info.html', {'form': form})
+
+
+def admin_logout(request):
+    request.session.clear()
+    return redirect('/login/')
+
+
+def admin_update(request):
+    if request.method == 'GET':
+        form = AdminPasswordModelForm()
+        return render(request, 'admin_pwd_update.html', {'form': form})
+    else:
+        admin_id = request.session['info']['id']
+        row_object = Admin.objects.filter(admin_id=admin_id).first()
+        original_password = row_object.password
+        print(original_password)
+        form = AdminPasswordModelForm(data=request.POST, instance=row_object)
+        if form.is_valid():
+            print(form.cleaned_data)
+            information = form.cleaned_data
+            # 验证原始密码
+            print(information['original_password'] != str(original_password))
+            if information['original_password'] != str(original_password):
+                form.add_error('original_password', '原密码不正确')
+                return render(request, 'admin_pwd_update.html', {'form': form})
+            # 判断两次输入的密码是否相同
+            password = information['password']
+            confirm_password = information['confirm_password']
+            if password == confirm_password:
+                # 相同则保存到数据库中去
+                form.save()
+                return redirect('/login/')
+            else:
+                form.add_error('password', '两次输入的密码不一致')
+                return render(request, 'admin_pwd_update.html',
+                              {'form': form})
+            pass
+
+        else:
+            return render(request, 'admin_pwd_update.html', {'form': form})

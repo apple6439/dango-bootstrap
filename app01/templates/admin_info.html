@@ -51,11 +51,22 @@
             background-color: #f8f9fa; /* 右侧背景色 */
         }
 
-        input[type="file"] {
-        display: none; /* 隐藏原生的文件选择控件 */
+        .button-container {
+            display: flex; /* 设置为 Flexbox 容器 */
+            justify-content: space-between; /* 在主轴（水平）方向上分散对齐 */
+            align-items: center; /* 垂直居中对齐 */
         }
 
-        label {
+        input[type="file"] {
+            display: none; /* 隐藏原生的文件选择控件 */
+        }
+
+        .upload {
+            border: none;
+        }
+
+        label, .upload {
+            font-weight: bold;
             margin-top: 20px;
             display: inline-block;
             padding: 10px 20px;
@@ -67,15 +78,16 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加阴影 */
         }
 
-        label:hover {
+        label:hover, .upload:hover {
             background-color: #0056b3; /* 悬停时的背景颜色 */
             transform: translateY(-2px); /* 按钮悬停时的轻微上移效果 */
         }
 
-        label:active {
+        label:active, .upload:active {
             transform: translateY(0);
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
+
 
         .right div {
             margin: 15px 0; /* 各项间距 */
@@ -99,15 +111,16 @@
 {% include 'layout_header.html' %}
 <div class="container">
     <div class="col-md-5 left">
-        <form method="post" action="/admin/info/"  enctype="multipart/form-data">
+        <form method="post" action="/admin/info/" enctype="multipart/form-data">
             {% csrf_token %}
             <h1>您的头像</h1>
             <img src="/media/{{ request.session.info.admin_image }}" style="height: 350px;width:300px">
-            <div>
-                {{ form.admin_image }}
+            <div class="button-container">
                 <label for="id_admin_image">选择图片</label>
+                {{ form.admin_image }}
+                <button type="submit" class="upload">上传头像</button>
             </div>
-            <button type="submit">上传头像</button>
+
         </form>
     </div>
     <div class="col-md-7 right">

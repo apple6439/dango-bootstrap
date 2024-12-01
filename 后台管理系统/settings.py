@@ -46,6 +46,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 自己写的middleware
+    'app01.middleware.middleware01.LoginMiddleware'
 ]
 
 ROOT_URLCONF = '后台管理系统.urls'

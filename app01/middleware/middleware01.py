@@ -11,7 +11,7 @@ class LoginMiddleware(MiddlewareMixin):
     # 读取当前访问用户的session信息，如果不为空，则说明已登录
     def process_request(self, request):
         # 排除哪些不需要登录就能访问的页面，如login
-        if request.path_info in ['/login/', '/image/code/']:
+        if request.path_info in ['/login/']:
             return
         info = request.session.get('info')
         # 已登录

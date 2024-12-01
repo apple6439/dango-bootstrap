@@ -32,7 +32,7 @@ urlpatterns = [
     path('user/list/', views.user_list),
     path('user/add/', views.user_add),
     path('user/<int:nid>/update/', views.user_update),
-    path('user/<int:nid>/delete/', views.user_delete),# 删除(多行和单行)
+    path('user/<int:nid>/delete/', views.user_delete),  # 删除(多行和单行)
     # 部门
     path('department/list/', views.department_list),
     path('department/add/', views.department_add),
@@ -45,4 +45,6 @@ urlpatterns = [
     path('order/<int:nid>/update/', views.order_update),  # 删除(多行和单行)
     # 管理员
     path('admin/info/', views.admin_info),
+    path('admin/update/', views.admin_update),
+    path('admin/logout/', views.admin_logout),
 ]
