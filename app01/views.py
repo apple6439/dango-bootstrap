@@ -124,25 +124,34 @@ def register(request):
 
 
 def home(request):
-    return render(request, 'home.html')
+    form = OrderModelForm()
+    data__list = Order.objects.all()
+    # 分页功能
+    paginator = Paginator(data__list, 10)  # 每页有5条数据
+    current_page = int(request.GET.get('page', 1))  # 获取当前页码,方便前端渲染已选择的页面，例如添加active
+    user_page = paginator.page(current_page)  # 当前的页码,并且生成这一个页码的数据
+
+    return render(request, 'home.html', {
+        'user_page': user_page,
+        'paginator': paginator,
+        'current_page': current_page, })
 
 
 def chart_data(request):
     # 获取部门业绩数据
     departments = Department.objects.values('name', 'performance')
 
-    # 处理折线图数据
+    # 处理柱状图数据
     line_chart_data = {
         'legend': [dept['name'] for dept in departments],
-        'xAxis': ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],  # 示例数据
+        'xAxis': [dept['name'] for dept in departments],  # 部门名称
         'series': [
             {
-                'name': dept['name'],
-                'data': [dept['performance'] + i for i in range(7)]  # 示例数据
-            } for dept in departments
+                'name': '业绩',  # 统一的系列名称
+                'data': [dept['performance'] for dept in departments]  # 所有部门的业绩
+            }
         ]
     }
-
     # 获取员工薪资数据
     employees = Employee.objects.values('name', 'salary')
     bar_chart_data = {

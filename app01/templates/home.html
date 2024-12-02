@@ -32,24 +32,14 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Mark</td>
-                                <td>Otto</td>
-                                <td>@mdo</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Jacob</td>
-                                <td>Thornton</td>
-                                <td>@fat</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">3</th>
-                                <td>Larry</td>
-                                <td>the Bird</td>
-                                <td>@twitter</td>
-                            </tr>
+                            {% for obj in user_page %}
+                                <tr>
+                                    <td >{{ obj.order_id }}</td>
+                                    <td >{{ obj.product_name }}</td>
+                                    <td >{{ obj.quantity }}</td>
+                                    <td >{{ obj.customer_name }}</td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -179,41 +169,40 @@
          */
         async function intLine() {
             const data = await fetchChartData(); // 获取数据
-
             var myChart = echarts.init(document.getElementById('chart1'));
-            var option = {
+
+            const option = {
+                dataset: [
+                    {
+                        dimensions: ['name', 'performance'], // 假设您有一个 performance 字段
+                        source: data.lineChart.series[0].data.map((value, index) => ({
+                            name: data.lineChart.xAxis[index],
+                            performance: value
+                        }))
+                    },
+                    {
+                        transform: {
+                            type: 'sort',
+                            config: {dimension: 'performance', order: 'desc'}
+                        }
+                    }
+                ],
                 title: {
-                    text: '部门业绩趋势',
+                    text: '部门业绩',
                     left: 'center'
-                },
-                tooltip: {
-                    trigger: 'axis'
-                },
-                legend: {
-                    data: data.lineChart.legend, // 假设从 API 获取的图例数据
-                    top: '8%'
-                },
-                grid: {
-                    left: '3%',
-                    right: '4%',
-                    bottom: '3%',
-                    containLabel: true
                 },
                 xAxis: {
                     type: 'category',
-                    boundaryGap: false,
-                    data: data.lineChart.xAxis // 假设从 API 获取的 x 轴数据
+                    axisLabel: {interval: 0, rotate: 30}
                 },
-                yAxis: {
-                    type: 'value',
-                },
-                series: data.lineChart.series.map(item => ({
-                    name: item.name,
-                    type: 'line',
-                    stack: 'Total',
-                    data: item.data
-                }))
+                yAxis: {},
+                series: {
+                    type: 'bar',
+                    encode: {x: 'name', y: 'performance'},
+                    datasetIndex: 1,
+                }
             };
+
             myChart.setOption(option);
         }
 
