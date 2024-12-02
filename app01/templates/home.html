@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% load static %}
 {% block css %}
-        <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
 {% block content %}
     <div class="container">
@@ -9,7 +9,7 @@
             <div class="col-md-4" style="height: 100vh;padding-right: 20px;padding-left: 20px">
                 <div class="row guanliyuan">
                     <div class="bottom_line">
-                        <img src="/media/{{ request.session.info.admin_image  }}">
+                        <img src="/media/{{ request.session.info.admin_image }}">
                         <div class="shunzhipailie">
                             <span>{{ request.session.info.name }}</span>
                             <span>超级管理员</span>
@@ -25,10 +25,10 @@
                         <table class="table">
                             <thead>
                             <tr>
-                                <th>课程</th>
-                                <th>今日购买</th>
-                                <th>本月购买</th>
-                                <th>总购买</th>
+                                <th>订单ID</th>
+                                <th>商品名称</th>
+                                <th>订单数量</th>
+                                <th>客户</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -131,10 +131,10 @@
                     <div id="chart1" style="height: 100%;width: 100%"></div>
                 </div>
                 <div class="row" style="height: 250px; margin-top: 15px; display: flex;">
-                    <div class="col-md-6" style="height: 250px; background-color: #fff; margin-right: 20px;">
-                        <div id="chart2" style="height: 100%;width: 100%"></div>
+                    <div class="col-md-6" style="height: 250px; background-color: #fff;width: 60%">
+                        <div id="chart2" style="height: 100%;width: 120%"></div>
                     </div>
-                    <div class="col-md-6" style="height: 250px; background-color: #fff;">
+                    <div class="col-md-6" style="height: 250px; background-color: #fff; margin-left: 10px;">
                         <div id="chart3" style="height: 100%;width: 100%"></div>
                     </div>
                 </div>
@@ -160,25 +160,38 @@
 
         // 这里可以添加图表初始化的代码
         $(function () {
-            intLine()
-            intBar()
-            intPie()
-        })
+            intLine();
+            intBar();
+            intPie();
+        });
+
+        /**
+         * 获取数据的函数（假设使用 AJAX 从服务器获取）
+         */
+        async function fetchChartData() {
+            // 这里可以替换为真实的 API
+            const response = await fetch('/chart_data/'); // 假设的 API 路径
+            return await response.json(); // 返回 JSON 数据
+        }
 
         /**
          * 初始化折线图
          */
-        function intLine() {
-            var myChart = echarts.init(document.getElementById('chart1'));
-            option = {
-                title: {
+        async function intLine() {
+            const data = await fetchChartData(); // 获取数据
 
+            var myChart = echarts.init(document.getElementById('chart1'));
+            var option = {
+                title: {
+                    text: '部门业绩趋势',
+                    left: 'center'
                 },
                 tooltip: {
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['1', '2', '3', '4', '5']
+                    data: data.lineChart.legend, // 假设从 API 获取的图例数据
+                    top: '8%'
                 },
                 grid: {
                     left: '3%',
@@ -186,104 +199,68 @@
                     bottom: '3%',
                     containLabel: true
                 },
-                toolbox: {
-                    feature: {
-                        {#saveAsImage: {}#}
-                    }
-                },
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data:['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    data: data.lineChart.xAxis // 假设从 API 获取的 x 轴数据
                 },
                 yAxis: {
-                    type: 'value'
+                    type: 'value',
                 },
-                series: [
-                    {
-                        name: '1',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [120, 132, 101, 134, 90, 230, 210]
-                    },
-                    {
-                        name: '2',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [220, 182, 191, 234, 290, 330, 310]
-                    },
-                    {
-                        name: '3',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [150, 232, 201, 154, 190, 330, 410]
-                    },
-                    {
-                        name: '4',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [320, 332, 301, 334, 390, 330, 320]
-                    },
-                    {
-                        name: '5',
-                        type: 'line',
-                        stack: 'Total',
-                        data: [820, 932, 901, 934, 1290, 1330, 1320]
-                    }
-                ]
+                series: data.lineChart.series.map(item => ({
+                    name: item.name,
+                    type: 'line',
+                    stack: 'Total',
+                    data: item.data
+                }))
             };
-            myChart.setOption(option)
+            myChart.setOption(option);
         }
 
         /**
          * 初始化柱状图
          */
-        function intBar() {
+        async function intBar() {
+            const data = await fetchChartData(); // 获取数据
+
             var myChart = echarts.init(document.getElementById('chart2'));
-            option = {
+            var option = {
                 title: {
+                    text: '员工薪资',
                     left: 'center'
                 },
                 tooltip: {
                     trigger: 'axis'
                 },
                 legend: {
-                    top: '5%',
+                    top: '10%',
                     left: 'center',
-                    data: ['1', '2'],
+                    data: data.barChart.legend // 假设从 API 获取的图例数据
                 },
                 xAxis: {
                     type: 'category',
-                    data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+                    data: data.barChart.xAxis // 假设从 API 获取的 x 轴数据
                 },
                 yAxis: {
-                    type: 'value'
+                    type: 'value',
                 },
-                series: [
-                    {
-                        name: '1',
-                        data: [120, 200, 150, 80, 70, 110, 130],
-                        type: 'bar'
-                    },
-                    {
-                        name: '2',
-                        data: [20, 20, 15, 40, 110, 30, 150],
-                        type: 'bar'
-                    }
-                ]
+                series: data.barChart.series.map(item => ({
+                    name: item.name,
+                    type: 'bar',
+                    data: item.data
+                }))
             };
-            myChart.setOption(option)
+            myChart.setOption(option);
         }
 
         /**
          * 初始化饼图
          */
-        function intPie() {
+        async function intPie() {
+            const data = await fetchChartData(); // 获取数据
+
             var myChart = echarts.init(document.getElementById('chart3'));
-            option = {
-                title: {
-                    left: 'center'
-                },
+            var option = {
                 tooltip: {
                     trigger: 'item'
                 },
@@ -291,30 +268,23 @@
                     top: '5%',
                     left: 'center'
                 },
-                series: [
-                    {
-                        name: 'Access From',
-                        type: 'pie',
-                        radius: '50%',
-                        data: [
-                            {value: 1048, name: '1'},
-                            {value: 735, name: '2'},
-                            {value: 580, name: '3'},
-                            {value: 484, name: '4'},
-                            {value: 300, name: '5'}
-                        ],
-                        emphasis: {
-                            itemStyle: {
-                                shadowBlur: 10,
-                                shadowOffsetX: 0,
-                                shadowColor: 'rgba(0, 0, 0, 0.5)'
-                            }
+                series: [{
+                    name: '订单来源',
+                    type: 'pie',
+                    radius: '50%',
+                    data: data.pieChart.data, // 假设从 API 获取的数据
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
                         }
                     }
-                ]
+                }]
             };
-            myChart.setOption(option)
+            myChart.setOption(option);
         }
 
     </script>
+
 {% endblock %}

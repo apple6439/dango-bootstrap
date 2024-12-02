@@ -28,6 +28,7 @@ urlpatterns = [
     path('register/', views.register),
     # 系统首页
     path('home/', views.home),
+    path('chart_data/', views.chart_data),
     # 员工
     path('user/list/', views.user_list),
     path('user/add/', views.user_add),

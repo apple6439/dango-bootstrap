@@ -6,6 +6,7 @@ from django.conf import settings
 from app01.models import Department, Employee, Order, Admin
 from django.core.paginator import Paginator
 import os
+from django.db import models
 
 # Create your views here.
 '''
@@ -124,6 +125,51 @@ def register(request):
 
 def home(request):
     return render(request, 'home.html')
+
+
+def chart_data(request):
+    # 获取部门业绩数据
+    departments = Department.objects.values('name', 'performance')
+
+    # 处理折线图数据
+    line_chart_data = {
+        'legend': [dept['name'] for dept in departments],
+        'xAxis': ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],  # 示例数据
+        'series': [
+            {
+                'name': dept['name'],
+                'data': [dept['performance'] + i for i in range(7)]  # 示例数据
+            } for dept in departments
+        ]
+    }
+
+    # 获取员工薪资数据
+    employees = Employee.objects.values('name', 'salary')
+    bar_chart_data = {
+        'legend': ['薪资'],
+        'xAxis': [emp['name'] for emp in employees],
+        'series': [
+            {
+                'name': '薪资',
+                'data': [emp['salary'] for emp in employees]
+            }
+        ]
+    }
+
+    # 获取订单数量数据
+    orders = Order.objects.values('product_name').annotate(total_quantity=models.Sum('quantity'))
+    pie_chart_data = {
+        'data': [
+            {'value': order['total_quantity'], 'name': order['product_name']} for order in orders
+        ]
+    }
+
+    # 返回所有数据
+    return JsonResponse({
+        'lineChart': line_chart_data,
+        'barChart': bar_chart_data,
+        'pieChart': pie_chart_data,
+    })
 
 
 '''
