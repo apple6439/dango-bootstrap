@@ -19,7 +19,10 @@
   
 - **模态框与消息提示**：
   - 采用模态框、AJAX 和 Toastr 实现增、删、改、查的功能。当管理员操作成功时，系统将弹出消息框进行提示。
-  - datapicker组件让管理员可以选择日期
+  - datapicker组件让管理员可以选择日期。
+    
+- **分页功能**：
+  - 导入Django中的包from django.core.paginator import Paginator来实现分页功能。
 
 - **订单管理**：
   - 显示商品图片，支持管理员对商品进行修改等操作。
