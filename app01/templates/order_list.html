@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+    <title>{% block title %}订单管理{% endblock %}</title>
 {% block content %}
     <div class="container">
         <div class="row">
@@ -54,7 +55,7 @@
                                     <input type="checkbox" class="select-row" value="{{ obj.order_id }}">
                                 </th>
                                 <td style="line-height: 70px">{{ obj.order_id }}</td>
-                                <td><img style="height: 70px;" src="/media/{{ obj.product_image }}"></td>
+                                <td><img style="height: 70px;width: 60px" src="/media/{{ obj.product_image }}"></td>
                                 <td style="line-height: 70px">{{ obj.product_name }}</td>
                                 <td style="line-height: 70px">{{ obj.quantity }}</td>
                                 <td style="line-height: 70px">{{ obj.order_date }}</td>

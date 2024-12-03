@@ -10,6 +10,24 @@ from django.db import models
 
 # Create your views here.
 '''
+404页面
+'''
+
+
+def page_not_found(request, exception):
+    return render(request, '404.html')
+
+
+'''
+500页面
+'''
+
+
+def page_error(request):
+    return render(request, '500.html')
+
+
+'''
 登录页面
 '''
 
@@ -88,6 +106,7 @@ def register(request):
         return render(request, 'index.html', {'login_form': LoginModelForm(), 'register_form': register_form})
     else:
         register_form = RegisterModelForm(request.POST)
+        print('123')
         if register_form.is_valid():
             print(register_form.cleaned_data)
             # 判断邮箱，用户名的唯一性
@@ -127,7 +146,7 @@ def home(request):
     form = OrderModelForm()
     data__list = Order.objects.all()
     # 分页功能
-    paginator = Paginator(data__list, 10)  # 每页有5条数据
+    paginator = Paginator(data__list, 10)  # 每页有10条数据
     current_page = int(request.GET.get('page', 1))  # 获取当前页码,方便前端渲染已选择的页面，例如添加active
     user_page = paginator.page(current_page)  # 当前的页码,并且生成这一个页码的数据
 

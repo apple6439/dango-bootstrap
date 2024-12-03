@@ -1,5 +1,6 @@
 {% extends 'layout.html' %}
 {% load static %}
+    <title>{% block title %}首页{% endblock %}</title>
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/home.css' %}">
 {% endblock %}
@@ -160,12 +161,12 @@
          */
         async function fetchChartData() {
             // 这里可以替换为真实的 API
-            const response = await fetch('/chart_data/'); // 假设的 API 路径
+            const response = await fetch('/chart_data/');
             return await response.json(); // 返回 JSON 数据
         }
 
         /**
-         * 初始化折线图
+         * 初始化柱状图图
          */
         async function intLine() {
             const data = await fetchChartData(); // 获取数据
@@ -174,7 +175,7 @@
             const option = {
                 dataset: [
                     {
-                        dimensions: ['name', 'performance'], // 假设您有一个 performance 字段
+                        dimensions: ['name', 'performance'],
                         source: data.lineChart.series[0].data.map((value, index) => ({
                             name: data.lineChart.xAxis[index],
                             performance: value
@@ -224,11 +225,11 @@
                 legend: {
                     top: '10%',
                     left: 'center',
-                    data: data.barChart.legend // 假设从 API 获取的图例数据
+                    data: data.barChart.legend
                 },
                 xAxis: {
                     type: 'category',
-                    data: data.barChart.xAxis // 假设从 API 获取的 x 轴数据
+                    data: data.barChart.xAxis
                 },
                 yAxis: {
                     type: 'value',
@@ -246,7 +247,7 @@
          * 初始化饼图
          */
         async function intPie() {
-            const data = await fetchChartData(); // 获取数据
+            const data = await fetchChartData();
 
             var myChart = echarts.init(document.getElementById('chart3'));
             var option = {
@@ -261,7 +262,7 @@
                     name: '订单来源',
                     type: 'pie',
                     radius: '50%',
-                    data: data.pieChart.data, // 假设从 API 获取的数据
+                    data: data.pieChart.data,
                     emphasis: {
                         itemStyle: {
                             shadowBlur: 10,
