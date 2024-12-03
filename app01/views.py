@@ -52,8 +52,10 @@ class LoginModelForm(forms.ModelForm):
 
 
 class RegisterModelForm(forms.ModelForm):
+    password = forms.CharField(label='密码', required=True,
+                               widget=forms.PasswordInput(attrs={"autocomplete": 'off'}))
     confirm_password = forms.CharField(label='确认密码', required=True,
-                                       widget=forms.TextInput(attrs={"autocomplete": 'off'}))
+                                       widget=forms.PasswordInput(attrs={"autocomplete": 'off'}))
 
     class Meta:
         model = Admin

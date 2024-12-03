@@ -21,6 +21,7 @@ from app01 import views
 
 urlpatterns = [
     re_path('^media/(?P<path>.*)', serve, {'document_root': settings.MEDIA_ROOT}),
+    re_path(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}, name='static'),  ##新增
     # path('admin/', admin.site.urls),
     # 登录页面
     path('', views.login),

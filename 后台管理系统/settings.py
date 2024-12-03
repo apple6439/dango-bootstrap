@@ -119,11 +119,12 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-# DEBUG = False时  下面两行代码让系统仍能加载css和js
+# DEBUG = False时  下面几行代码让系统仍能加载css和js，设置django的文件服务的django.views.static.serve()方法
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'app01/static'),  # 适配您的目录结构
+    # os.path.join(BASE_DIR, 'app01/static'),  # 适配您的目录结构
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
