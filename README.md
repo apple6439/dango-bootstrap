@@ -1,6 +1,8 @@
 ## 项目概述
 
 该系统是基于武沛齐老师的课程所编写，后端采用 Django 框架，前端使用 Bootstrap。
+### 导入的组件
+- echarts,toastr,jquery,bootstrap,datapicker
 
 ### 注册与登录页面
 
