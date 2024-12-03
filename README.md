@@ -35,5 +35,7 @@
 
 - **数据校验与错误提示**：
   - modelform实现数据的校验，并对错误进行友好的显示。
+- **处理上传的图片**：
+  - 配置media用来接受用户传来的图片，方便后续的管理。
 ### 运行服务器
 - python manage.py runserve --insecure。
